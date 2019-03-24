@@ -7,8 +7,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.HttpRequestDecoder;
-import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.codec.http.HttpServerCodec;
 
 public class MyTomcat {
 
@@ -25,10 +24,12 @@ public class MyTomcat {
                     .group(boss, worker)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            // 请求消息解码器
+                            //解码和编码HTTP请求
+                            socketChannel.pipeline().addLast(new HttpServerCodec());
+                           /* // 请求消息解码器
                             socketChannel.pipeline().addLast(new HttpRequestDecoder());
                             //响应解码器
-                            socketChannel.pipeline().addLast(new HttpResponseEncoder());
+                            socketChannel.pipeline().addLast(new HttpResponseEncoder());*/
                             //自定义处理逻辑
                             socketChannel.pipeline().addLast(new MyTomcatHandler());
                         }
